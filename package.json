@@ -1,0 +1,16 @@
+{
+  "name": "node-react-employee-biodata-demo",
+  "version": "1.0.0",
+  "main": "api/index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "cd frontend && yarn && yarn build"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mysql2": "^3.22.3",
+    "sequelize": "^6.37.8"
+  }
+}
