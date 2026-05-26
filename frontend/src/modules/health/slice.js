@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-/**
- * Async thunk to fetch health status from the backend using the Fetch API.
- * This assumes your backend has a GET /api/health endpoint.
- */
+
 export const fetchHealthStatus = createAsyncThunk(
     'health/fetchStatus',
     async (_, { rejectWithValue }) => {

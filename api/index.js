@@ -3,13 +3,34 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from 'url';
 
+import { registerUser, loginUser } from '../modules/auth/controller.js';
+
+import { authenticateToken } from '../middleware/auth.js';
+
+import { 
+  createUser, 
+  getAllUsers, 
+  getUserById, 
+  updateUser, 
+  deleteUser 
+} from '../modules/users/controller.js';
+
+import { 
+  createProfile, 
+  getAllProfiles, 
+  getProfileById, 
+  updateProfile, 
+  deleteProfile,
+  getMyProfile
+} from '../modules/biodata/controller.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
 const corsOptions = {
-    origin: "http://localhost:5173"
+    origin: "http://localhost:9092"
 };
 
 app.use(cors(corsOptions));
@@ -21,6 +42,22 @@ app.get("/v1/health/status", (req, res) => {
         status: "ok"
     });
 });
+
+app.post('/v1/auth/register', registerUser);
+app.post('/v1/auth/login', loginUser);
+
+app.post('/v1/users', authenticateToken, createUser);
+app.get('/v1/users', authenticateToken, getAllUsers);
+app.get('/v1/users/:id', authenticateToken, getUserById);
+app.put('/v1/users/:id', authenticateToken, updateUser);
+app.delete('/v1/users/:id', authenticateToken, deleteUser);
+
+app.get('/v1/biodatas/me', authenticateToken, getMyProfile);
+app.post('/v1/biodatas', authenticateToken, createProfile);
+app.get('/v1/biodatas', authenticateToken, getAllProfiles);
+app.get('/v1/biodatas/:id', authenticateToken, getProfileById);
+app.put('/v1/biodatas/:id', authenticateToken, updateProfile);
+app.delete('/v1/biodatas/:id', authenticateToken, deleteProfile);
 
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 app.get('/{*splat}', (req, res) => {
