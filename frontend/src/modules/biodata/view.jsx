@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function BiodataView() {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
@@ -19,6 +20,10 @@ export default function BiodataView() {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
+    if (!token) {
+      navigate('/login'); // Redirect to login if no token
+      return;
+    }
     fetchProfile();
   }, [id]);
 
