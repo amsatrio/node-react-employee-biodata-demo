@@ -69,7 +69,7 @@ export const getAllProfiles = async (req, res) => {
     if (!req.user || req.user.role !== 0) {
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
-    const [rows] = await db.query(`SELECT id, name, position, email, phone_number FROM biodata`);
+    const [rows] = await db.query(`SELECT id, name, position, dob, pob FROM biodata`);
     res.status(200).json(rows);
   } catch (error) {
     res.status(500).json({ error: error.message });

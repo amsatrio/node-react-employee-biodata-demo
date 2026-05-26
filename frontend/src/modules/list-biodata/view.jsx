@@ -53,6 +53,33 @@ export default function ListBiodataView() {
     fetchAllBiodatas();
   }, [navigate]);
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this record?")) {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`/v1/biodatas/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || "Failed to delete the record.");
+      }
+
+      // Successfully deleted on server, now update local state
+      setBiodatas((prev) => prev.filter((bio) => bio.id !== id));
+      alert("Record deleted successfully.");
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
   if (loading) {
     return <p>Loading biodata list...</p>;
   }
@@ -71,11 +98,10 @@ export default function ListBiodataView() {
           <thead>
             <tr style={{ borderBottom: '1px solid #ddd' }}>
               <th style={{ padding: '8px', textAlign: 'left' }}>ID</th>
-              <th style={{ padding: '8px', textAlign: 'left' }}>Name</th>
-              <th style={{ padding: '8px', textAlign: 'left' }}>Position</th>
-              <th style={{ padding: '8px', textAlign: 'left' }}>Email</th>
-              <th style={{ padding: '8px', textAlign: 'left' }}>Phone Number</th>
-              <th style={{ padding: '8px', textAlign: 'left' }}>Action</th>
+              <th style={{ padding: '8px', textAlign: 'left' }}>Nama</th>
+              <th style={{ padding: '8px', textAlign: 'left' }}>Tempat Tanggal Lahir</th>
+              <th style={{ padding: '8px', textAlign: 'left' }}>Posisi</th>
+              <th style={{ padding: '8px', textAlign: 'left' }}>Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -83,12 +109,15 @@ export default function ListBiodataView() {
               <tr key={bio.id} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={{ padding: '8px' }}>{bio.id}</td>
                 <td style={{ padding: '8px' }}>{bio.name}</td>
+                <td style={{ padding: '8px' }}>{bio.pob}, {bio.dob}</td>
                 <td style={{ padding: '8px' }}>{bio.position}</td>
-                <td style={{ padding: '8px' }}>{bio.email}</td>
-                <td style={{ padding: '8px' }}>{bio.phone_number}</td>
                 <td style={{ padding: '8px' }}>
                   <button onClick={() => navigate(`/biodata-detail/${bio.id}`)}>
                     View Details
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(bio.id)}>
+                    Delete
                   </button>
                 </td>
               </tr>
